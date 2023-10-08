@@ -10,13 +10,32 @@ const client = new MongoClient(uri, {
   }
 });
 
+const maxRetryAttempts = 10;
+const retryDelay = 3000;
+
 async function connectToDb() {
-  try {
-    await client.connect();
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged the deployment. Successfully connected to MongoDB! ✔");
-  } finally {
-    await client.close();
+  let currentRetry = 0;
+
+  while (currentRetry < maxRetryAttempts) {
+    try {
+      await client.connect();
+      await client.db("admin").command({ ping: 1 });
+      console.log("Pinged the deployment. Successfully connected to MongoDB! ✔");
+      return;
+    } catch (err) {
+      console.error(`Connection attempt ${currentRetry + 1} failed: ${err.message}`);
+      currentRetry++;
+
+      if (currentRetry < maxRetryAttempts) {
+        console.log(`Retrying in ${retryDelay / 1000} seconds...`);
+        await new Promise((resolve) => setTimeout(resolve, retryDelay));
+      } else {
+        console.error(`Max retry attempts (${maxRetryAttempts}) reached. Connection failed.`);
+        throw err;
+      }
+    } finally {
+        await client.close();
+    }
   }
 }
 
