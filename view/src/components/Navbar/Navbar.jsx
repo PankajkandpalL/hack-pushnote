@@ -1,78 +1,119 @@
-import React, { useState } from "react";
-import { Button } from "../global/Button";
+import React from "react";
+import {
+  Navbar,
+  MobileNav,
+  Typography,
+  Button,
+  IconButton,
+  Card,
+} from "@material-tailwind/react";
+import { Link } from "react-router-dom";
 
-export const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
+export function StickyNavbar() {
+  const [openNav, setOpenNav] = React.useState(false);
+
+  React.useEffect(() => {
+    window.addEventListener(
+      "resize",
+      () => window.innerWidth >= 960 && setOpenNav(false)
+    );
+  }, []);
   const navLinks = [
     { name: "Features", link: "/features" },
-    { name: "Pricing", link: "/pricing" },
+    { name: "Pricing", link: "/prices" },
   ];
 
+  const navList = (
+    <ul className="mb-4 mt-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+      <Typography
+        as="li"
+        variant="lead"
+        color="blue-gray"
+        className="p-1 font-normal"
+      >
+        <Link to="/features" className="flex items-center">
+          features
+        </Link>
+      </Typography>{" "}
+      <Typography
+        as="li"
+        variant="lead"
+        color="blue-gray"
+        className="p-1 font-normal"
+      >
+        <Link to="/prices" className="flex items-center">
+          prices
+        </Link>
+      </Typography>
+    </ul>
+  );
+
   return (
-    <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-5">
-        <div className="flex gap-10">
-          <a href="https://flowbite.com/" className="flex items-center">
-            <img
-              src="https://flowbite.com/docs/images/logo.svg"
-              className="h-8 mr-3"
-              alt="Flowbite Logo"
-            />
-            <span className="self-center text-1xl font-semibold whitespace-nowrap dark:text-white">
-              PushNote
-            </span>
-          </a>
-          <div
-            className={`items-center justify-between w-full md:flex md:w-auto md:order-1 ${
-              menuOpen ? "block" : "hidden"
-            } ${menuOpen ? "absolute" : ""}  `}
-            id="navbar-sticky"
-            onClick={() => setMenuOpen(!menuOpen)}
+    <div className="sticky p-3 w-[90]">
+      <Navbar
+        className="sticky top-0 z-10 h-max max-w-full rounded-none py-2 px-2 lg:px-4 lg:py-2 p-1"
+        fullWidth={true}
+      >
+        <div className="flex items-center justify-between text-blue-gray-900 w-[95%] m-auto">
+          <Typography
+            as="li"
+            href="/"
+            variant="lead"
+            className="mr-4 cursor-pointer py-1.5 font-medium"
           >
-            <ul className=" w-full flex flex-col p-4 md:p-0 mt-12 font-medium border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-              {navLinks.map((e) => (
-                <li key={e.name}>
-                  <a
-                    href={e.link}
-                    className="block py-2 pl-3 pr-4 text-black  rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
-                    aria-current="page"
-                  >
-                    {e.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <Link to={"/"}> PushNote</Link>
+          </Typography>
+          <div className="flex items-center gap-4">
+            <div className="mr-4 hidden   lg:block">{navList}</div>
+            <Button
+              variant="gradient"
+              size="md"
+              color="green"
+              className="inline-block"
+            >
+              <Link to={"/register"}>Try Now</Link>
+            </Button>
+            <IconButton
+              variant="text"
+              className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
+              ripple={false}
+              onClick={() => setOpenNav(!openNav)}
+            >
+              {openNav ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  className="h-6 w-6"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              )}
+            </IconButton>
           </div>
         </div>
-
-        <div className="flex md:order-2">
-          <Button title={"Try Now"} />
-          <button
-            type="button"
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-            aria-controls="navbar-sticky"
-            aria-expanded={menuOpen}
-          >
-            <span className="sr-only">Open main menu</span>
-            <svg
-              className="w-5 h-5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 17 14"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M1 1h15M1 7h15M1 13h15"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </nav>
+        <MobileNav open={openNav}>{navList}</MobileNav>
+      </Navbar>
+    </div>
   );
-};
+}
