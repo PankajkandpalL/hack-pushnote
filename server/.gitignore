@@ -5,3 +5,6 @@ package-lock.json
 
 #private
 .env
+
+#logger
+./logs
