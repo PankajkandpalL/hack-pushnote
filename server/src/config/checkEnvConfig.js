@@ -2,7 +2,7 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 
-const requiredEnvVariables = ['PORT', 'DB_URL', 'NODE_ENV']; 
+const requiredEnvVariables = ['PORT', 'DB_URL', 'NODE_ENV', 'JWT_SECRET', 'SESSION_SECRET']; 
 
 const missingVariables = requiredEnvVariables.filter((variable) => !process.env[variable]);
 
