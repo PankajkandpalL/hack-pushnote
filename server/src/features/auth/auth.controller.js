@@ -95,7 +95,7 @@ class AuthController {
         AuthController.logoutHandler(res, req, next);
         return;
       case "register":
-        AuthController.registerHandler(res, req, next);
+        AuthController.registerHandler(res, req.body, next);
         return;
       default:
         return next();
