@@ -4,7 +4,7 @@ import { Details } from "./Details";
 
 export const Home = () => {
   return (
-    <div className="flex flex-col gap-28 relative">
+    <div className="flex flex-col gap-28 ">
       <Intro />
       <Details />
     </div>

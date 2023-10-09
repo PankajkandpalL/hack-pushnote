@@ -1,5 +1,5 @@
 import React from "react";
-import { Carousel } from "./Carousel";
+import { CarouselDefault } from "./Carousel";
 
 export const Details = () => {
   return (
@@ -16,7 +16,8 @@ export const Details = () => {
           src="https://nulab.com/static/8c1bca2d1f957f388d979c416d52c090/96943/img_backlog_main-slide1.webp"
           alt=""
         /> */}
-        <Carousel />
+        {/* <Carousel /> */}
+        <CarouselDefault />
       </div>
     </div>
   );
