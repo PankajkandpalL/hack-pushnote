@@ -1,8 +1,6 @@
 import { Input } from "@material-tailwind/react";
 
-export function InputIcon({ label, icon, cb, type }) {
-  console.log(icon);
-
+export function InputIcon({ label, icon, cb, userInfo }) {
   return (
     <div className="w-[100%] p-2  ">
       <Input
@@ -11,6 +9,7 @@ export function InputIcon({ label, icon, cb, type }) {
         size={"lg"}
         onChange={(e) => cb(e)}
         name={label}
+        value={userInfo[label]}
       />
     </div>
   );
