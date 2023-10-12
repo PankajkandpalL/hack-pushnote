@@ -6,6 +6,7 @@ const {
 const { hashPassword, compareWithHash } = require("../../utils/hashPasswords");
 const Joi = require("joi");
 const { createUserToken } = require("../../utils/auth/createUserToken");
+const { mailSender } = require("../../utils/sendMail");
 
 class AuthController {
   static loginHandler = async (res, req,next) => {
@@ -83,6 +84,40 @@ class AuthController {
     }
   };
 
+  static forgetPass = async(req,user,next) => {
+    try{
+      const loginObjValidator = Joi.object({
+        email: Joi.string().email({ minDomainSegments: 2 }).required(),
+        password: Joi.string()
+          .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
+          .required(),
+        resetPassword : Joi.string()
+          .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
+          .required()
+      });
+      await loginObjValidator.validateAsync(user);
+      const isUserExists = await User.findOne({ email });
+      if (!isUserExists) {
+        return res.status(409).json({ message: "User do not exists" });
+      }
+
+      // const mailSent = await mailSender(email, isUserPresent.name, resetPassword);
+      // if(!mailSent){
+      //   throw new Error("Mail not sent");
+      // }
+
+      const hashed = hashPassword(resetPassword);
+      isUserExists.password = hashed;
+      await isUserExists.save();
+      return res.status(200).send({ error : false, message : "Password updated successfully" })
+
+    }
+    catch(e){
+      console.error(e)
+      next(e);
+    }
+  } 
+
   handleOperations = (req, res, next) => {
     
     const session = req.query.session;
@@ -97,7 +132,9 @@ class AuthController {
       case "register":
         AuthController.registerHandler(res, req.body, next);
         return;
-      default:
+      case "resetPassword":
+        AuthController.forgetPass(res, req.body, next);
+        default:
         return next();
     }
   };
