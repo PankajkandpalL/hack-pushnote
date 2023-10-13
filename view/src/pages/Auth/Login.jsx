@@ -12,6 +12,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { InputIcon } from "../../components/global/Input";
 import { useState } from "react";
 import axios from "axios";
+import { AlertBox } from "../../components/global/Alert";
 
 export function Login() {
   const input = [
@@ -59,6 +60,12 @@ export function Login() {
     email: "",
     password: "",
   });
+  const [alert, setAlert] = useState({
+    alert: false,
+    err: false,
+    res: false,
+    mes: "",
+  });
 
   const inputHandler = (e) => {
     setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
@@ -67,13 +74,28 @@ export function Login() {
     axios
       .post("http://localhost:8080/v1/auth/user?session=login", userInfo)
       .then((d) => {
-        alert("loged in successfully");
-        navigate("/");
+        console.log(d);
+        setAlert({
+          ...alert,
+          res: d.data.items,
+          alert: true,
+          mes: "user logged in succesfully",
+        });
       })
-      .catch((err) => alert(err));
+      .catch((err) => {
+        setAlert({ ...alert, err: err.response.data.message, alert: true });
+      });
     console.log(userInfo);
   };
-
+  const alertHandler = () => {
+    setAlert({ ...alert, alert: false });
+  };
+  if (alert.alert) {
+    return <AlertBox state={alert} cb={alertHandler} />;
+  }
+  if (alert.res) {
+    navigate("/");
+  }
   return (
     <div className="mt-20">
       <Typography className="text-center text-4xl font-extrabold ">

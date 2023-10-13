@@ -6,8 +6,14 @@ import { OrgInfo } from "./OrgInfo";
 import { StepperWithContent } from "./Stepper";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { AlertBox } from "../../components/global/Alert";
 
 export const Register = () => {
+  const [alert, setAlert] = useState({
+    alert: false,
+    err: false,
+    res: false,
+  });
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({
     username: "",
@@ -26,7 +32,9 @@ export const Register = () => {
       setStep(step + 1);
       setNext(true);
     } else {
-      alert("some fields are missing");
+      // alert("fields are blanded");
+      setAlert({ ...alert, err: "all the fields are required", alert: true });
+      return <AlertBox />;
     }
   };
 
@@ -38,7 +46,14 @@ export const Register = () => {
         ...userInfo,
         repeatPassword: userInfo.password,
       })
-      .then((d) => navigate("/login"));
+      .then((d) => {
+        console.log(d);
+        setAlert({ ...alert, res: d.data.message, alert: true });
+      })
+      .catch((err) => {
+        setAlert({ ...alert, err: err.response.data.message, alert: true });
+        // alert(err.response.data.message);
+      });
 
     setUserInfo({
       username: "",
@@ -66,6 +81,15 @@ export const Register = () => {
   const orgHander = (e) => {
     // console.log(e);
   };
+  const alertHandler = () => {
+    setAlert({ ...alert, alert: false });
+  };
+  if (alert.alert) {
+    return <AlertBox state={alert} cb={alertHandler} />;
+  }
+  if (alert.res) {
+    navigate("/login");
+  }
   return (
     <div className="w-[70%] text-center m-auto text-xl gap-10 flex flex-col mt-10 ">
       <div className="flex gap-4 flex-col w-[80%] m-auto">
